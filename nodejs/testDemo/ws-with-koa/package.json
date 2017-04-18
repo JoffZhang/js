@@ -1,0 +1,30 @@
+{
+  "name": "ws-with-koa",
+  "version": "1.0.0",
+  "description": "ws-with-koa websocket",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "koa",
+    "async",
+    "ws",
+    "websocket"
+  ],
+  "author": "JOFF ZHANG",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelliao/learn-javascript.git"
+  },
+  "dependencies": {
+    "ws": "2.2.3",
+    "koa": "2.2.0",
+    "koa-bodyparser": "3.2.0",
+    "koa-router": "7.0.0",
+    "nunjucks": "3.0.0",
+    "mime": "1.3.4",
+    "mz": "2.4.0"
+  }
+}

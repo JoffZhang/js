@@ -1,0 +1,21 @@
+{
+    "name": "nunjucks-use",
+    "version": "1.0.0",
+    "description": "nunjucks template example",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "keywords": [
+        "nunjecks"
+    ],
+    "author": "Joff Zhang",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/michaelliao/learn-javascript.git"
+    },
+    "dependencies": {
+        "nunjucks": "2.4.2"
+    }
+}

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vuejs demo</title>
+    <script src="static/vue.js"></script>
+    <style>
+        div {
+            margin: 5px 5px;
+        }
+    </style>
+</head>
+<body>
+1.声明式渲染
+<div id="app">
+    {{ message }}
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {message: 'Hello Vue'}
+    });
+</script>
+
+<div id="app-2">
+  <span v-bind:title="message">
+    鼠标悬停几秒钟查看此处动态绑定的提示信息！
+  </span>
+</div>
+<script>
+    var app2 = new Vue({
+        el: '#app-2',
+        data: {
+            message: '页面加载于 ' + new Date()
+        }
+    });
+    //v-bind 将这个元素节点的 title 属性和 Vue 实例的 message 属性保持一致
+    //控制台适用 app2.message = xxxx可更改title属性值
+</script>
+
+<hr>
+2.条件与循环
+
+<div id="app-3">
+    <p v-if="seen">现在你看到我了</p>
+</div>
+<script>
+    var app3 = new Vue({
+        el: "#app-3",
+        data: {seen: true}
+    });
+    //控制节点的隐藏显示
+    //app3.seen = false;
+</script>
+
+<div id="app-4">
+    <ol>
+        <li v-for="todo in todos">
+            {{ todo.text }}
+        </li>
+    </ol>
+</div>
+<script>
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            todos: [
+                {text: 'JAVA'},
+                {text: 'javascript'},
+                {text: 'php'}
+            ]
+        }
+    });
+    //在控制台里，输入 app4.todos.push({ text: '新项目' })，你会发现列表中添加了一个新项。
+</script>
+
+<hr>
+3.处理用户输入
+<div id="app-5">
+    <p>{{ message }}</p>
+    <button v-on:click="reverseMessage">逆转消息</button>
+</div>
+<script>
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello Vue.js'
+        },
+        methods: {
+            reverseMessage: function () {
+                this.message = this.message.split('').reverse().join('');
+            }
+        }
+    });
+</script>
+
+<div id="app-6">
+    <p>{{ message}}</p>
+    <input v-model="message">
+</div>
+<script>
+    var app6 = new Vue({
+        el: '#app-6',
+        data: {
+            message: 'Hello Vue.js'
+        }
+    });
+
+</script>
+
+<hr>
+4.组件化应用构建
+
+<div id="app-7">
+    <ol>
+        <!-- 现在我们为每个todo-item提供待办项对象    -->
+        <!-- 待办项对象是变量，即其内容可以是动态的 -->
+        <todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
+    </ol>
+</div>
+<script>
+
+    //在 Vue 中注册组件
+    Vue.component('todo-item', {
+        // todo-item 组件现在接受一个
+        // "prop"，类似于一个自定义属性
+        // 这个属性名为 todo。
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+    //现在你可以用它构建另一个组件模板：
+    var app7 = new Vue({
+        el: '#app-7',
+        data: {
+            groceryList: [
+                {text: '蔬菜'},
+                {text: '奶酪'},
+                {text: '随便其他什么人吃的东西'}
+            ]
+        }
+    })
+</script>
+
+
+<script>
+    /*//构造器
+     var vm = new Vue({
+     // 选项
+     })
+     var MyComponent = Vue.extend({
+     // 扩展选项
+     })
+     // 所有的 `MyComponent` 实例都将以预定义的扩展选项被创建
+     var myComponentInstance = new MyComponent();
+
+     //属性和方法
+     // Vue 实例都会代理其 data 对象里所有的属性：
+     var data = { a: 1 }
+     var vm = new Vue({
+     data: data
+     })
+     vm.a === data.a // -> true
+     // 设置属性也会影响到原始数据
+     vm.a = 2
+     data.a // -> 2
+     // ... 反之亦然
+     data.a = 3
+     vm.a // -> 3
+
+     var data = { a: 1 }
+     var vm = new Vue({
+     el: '#example',
+     data: data
+     })
+     vm.$data === data // -> true
+     vm.$el === document.getElementById('example') // -> true
+     // $watch 是一个实例方法
+     vm.$watch('a', function (newVal, oldVal) {
+     // 这个回调将在 `vm.a`  改变后调用
+     })
+     var vm = new Vue({
+     data: {
+     a: 1
+     },
+     created: function () {
+     // `this` 指向 vm 实例
+     console.log('a is: ' + this.a)
+     }
+     })
+     // -> "a is: 1"*/
+</script>
+
+<hr>
+5.计算属性
+<div id="example">
+    <p>Original message: "{{ message}}"</p>
+    <p>Computed reversed message : "{{ reversedMessage}}" created at {{ now }}</p>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#example',
+        data: {message: 'hello'},
+        computed: {//计算属性   会缓存之前计算,直到他的依赖message发生改变才重新执行函数
+            reversedMessage: function () {
+                return this.message.split('').reverse().join('');
+            },
+            now: function () {//计算属性将不再更新，因为 Date.now() 不是响应式依赖
+                return Date.now();
+            }
+        }
+        /*, <p>Reversed message: "{{ reversedMessage() }}"</p>
+         methods:{
+         reversedMessage:function(){
+         return this.message.split('').reverse().join('');
+         }
+         }*/
+    });
+
+</script>
+
+<div id="demo"> {{ fullName }}</div>
+<script>
+    var vm1 = new Vue({
+        el: '#demo',
+        data: {
+            firstName: 'Foo',
+            lastName: 'Bar'
+        },
+        /* warch:{
+         firstName:function(val){
+         this.fullName = val + ' '+this.lastName;
+         },
+         lastName:function(val){
+         this.fullName = this.firstName + ' '+ val;
+         }
+         }*/
+        computed: {
+            fullName: function () {
+                return this.firstName + ' ' + this.lastName;
+            }
+        }
+    });
+</script>
+
+
+<div id="watch-example">
+    <p>
+        Ask a yes/no question:
+        <input v-model="question">
+    </p>
+    <p>{{ answer }}</p>
+</div>
+<script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+<script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script>
+<script>
+    var watchExampleVM = new Vue({
+        el: '#watch-example',
+        data: {
+            question: '',
+            answer: 'I cannot give you an answer until you ask a question!'
+        },
+        watch: {
+            // 如果 question 发生改变，这个函数就会运行
+            question: function (newQestion) {
+                this.answer = 'Waiting for you to stop typing ...';
+                this.getAnswer();
+            }
+        },
+        methods: {
+            // _.debounce 是一个通过 lodash 限制操作频率的函数。
+            // 在这个例子中，我们希望限制访问yesno.wtf/api的频率
+            // ajax请求直到用户输入完毕才会发出
+            getAnswer: _.debounce(
+                    function () {
+                        var vm = this
+                        if (this.question.indexOf('?') === -1) {
+                            vm.answer = 'Questions usually contain a question mark. ;-)'
+                            return
+                        }
+                        vm.answer = 'Thinking...'
+                        axios.get('https://yesno.wtf/api')
+                                .then(function (response) {
+                                    vm.answer = _.capitalize(response.data.answer)
+                                })
+                                .catch(function (error) {
+                                    vm.answer = 'Error! Could not reach the API. ' + error
+                                })
+                    },
+                    // 这是我们为用户停止输入等待的毫秒数
+                    500
+            )
+        }
+    });
+</script>
+<hr>
+6.Class与Style绑定
+<ol>
+    <li>
+        <div id="class" class="static" v-bind:class="{ active : isActive,'text-danger':hasError }">
+            对象语法：v-bind:class可于普通class属性共存
+        </div>
+        <div id="class1" v-bind:class="classObject">
+            ~也可以直接绑定数据里的一个对象
+        </div>
+        <div id="class2" v-bind:class="classObject">
+            ~也可以在这里绑定返回对象的计算属性.
+        </div>
+        <div id="class3" v-bind:class="[activeClass,errorClass]">
+            数组语法：可以把一个数组传给 v-bind:class ，以应用一个 class 列表
+            如果你也想根据条件切换列表中的 class ，可以用三元表达式：
+            v-bind:class="[isActive ? activeClass : '', errorClass]"
+            此例始终添加 errorClass ，但是只有在 isActive 是 true 时添加 activeClass 。
+            不过，当有多个条件 class 时这样写有些繁琐。可以在数组语法中使用对象语法：
+            v-bind:class="[{ active: isActive }, errorClass]"
+        </div>
+        <script>
+            var vm = new Vue({
+                el: "#class",
+                data: {
+                    isActive: true,
+                    hasError: true
+                }
+            });
+            var vm = new Vue({
+                el: "#class1",
+                data: {
+                    classObject: {
+                        active: true,
+                        'text-danger': true
+                    }
+                }
+            });
+            var vm = new Vue({
+                el: "#class2",
+                data: {
+                    isActive: true,
+                    error: null
+                },
+                computed: {
+                    classObject: function () {
+                        return {
+                            active: this.isActive && !this.error,
+                            'text-danger': this.error && this.error.type === 'fatal'
+                        }
+                    }
+                }
+            });
+            var vm = new Vue({
+                el: "#class3",
+                data: {
+                    activeClass: 'active',
+                    errorClass: 'text-danger'
+                }
+            });
+        </script>
+    </li>
+    <li>
+
+        <div id="my-component">
+            用在组件上：
+            <my-component class="baz boo"></my-component>
+        </div>
+        <script>
+            Vue.component('my-component', {
+                template: '<p class="foo bar">当你在一个定制的组件上用到 class 属性的时候，这些类将被添加到根元素上面，这个元素上已经存在的类不会被覆盖。' +
+                '同样适用与绑定html class : v-bind:class="{ active: isActive }"</p>'
+            });
+            var vm = new Vue({
+                el: "#my-component"
+            });
+        </script>
+    </li>
+    <li>
+
+        <div id="style" v-bind:style="{color:activeColor,fontSize:fontSize+'px'}">
+            绑定内联样式：v-bind:style 的对象语法十分直观——看着非常像 CSS ，其实它是一个 JavaScript 对象。 CSS 属性名可以用驼峰式（camelCase）或短横分隔命名（kebab-case）
+        </div>
+        <div id="style1" v-bind:style="[baseStyles,overridingStyles]">
+            v-bind:style 的数组语法可以将多个样式对象应用到一个元素上
+        </div>
+        <div id="style2">
+            当 v-bind:style 使用需要特定前缀的 CSS 属性时，如 transform ，Vue.js 会自动侦测并添加相应的前缀。
+        </div>
+        <script>
+            var vm = new Vue({
+                el: '#style',
+                data: {
+                    activeColor: 'red',
+                    fontSize: 20//直接绑定到一个样式对象通常更好，让模板更清晰： v-bind:style="styleObject" styleObject: { color: 'red', fontSize: '13px' },对象语法常常结合返回对象的计算属性使用
+                }
+            });
+        </script>
+    </li>
+</ol>
+<div id="for">
+    <span v-for="n in 10">{{ n }}</span>
+</div>
+<script>
+    new Vue({el:'#for'})
+</script>
+</body>
+</html>
